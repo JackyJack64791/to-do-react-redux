@@ -49,7 +49,7 @@ class TodoCreate extends Component {
             datePerform: '',
             checked: false,
         };
-        actions.todoCreate(todo);
+        this.props.todoCreate(todo);
         if (!this.props.isError) this.props.history.push("/dashboard");
     }
 
@@ -79,10 +79,11 @@ class TodoCreate extends Component {
                 <label htmlFor="deadline" className="col-md-4 control-label">Importance</label>
                 <div className="col-md-6">
                     <select id="importance" className="form-control"
-                            name="importance" required onChange={this.handleImportance}>
-                        <option value="1">Common</option>
-                        <option value="2">Important</option>
-                        <option value="3">Very important</option>
+                            name="importance" defaultValue="0" required onChange={this.handleImportance}>
+                        <option disabled value="0">Choose importance...</option>
+                        <option value="Common">Common</option>
+                        <option value="Important">Important</option>
+                        <option value="Very important">Very important</option>
                     </select>
 
                 </div>
@@ -113,6 +114,5 @@ function mapStateToProps(state) {
         error: state.todo.error
     }
 }
-
 
 export default connect(mapStateToProps, actions)(TodoCreate);

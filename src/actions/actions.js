@@ -1,4 +1,5 @@
 import {
+    TODO_CHECK,
     TODO_CHECK_ERROR,
     TODO_CHECK_LOADING,
     TODO_CREATE, TODO_CREATE_ERROR, TODO_CREATE_LOADING, TODO_DELETE, TODO_DELETE_ERROR, TODO_DELETE_LOADING, TODO_GET,
@@ -10,19 +11,25 @@ import {
 } from "../constants/actionTypes";
 
 export function todoCreate(todo) {
+    return function (dispatch) {
         try {
-            todoCreateLoading();
+            dispatch(todoCreateLoading());
             let todos = JSON.parse(localStorage.getItem('todos')) || [];
             todos.push(todo);
             localStorage.setItem('todos', JSON.stringify(todos));
-            todoCreateSuccess();
+            dispatch(todoCreateSuccess(todo.id+1));
+            dispatch(todoGet());
         } catch(e) {
-            todoCreateError(e.message);
+            dispatch(todoCreateError(e.message));
         }
+    }
 }
 
-export function todoCreateSuccess() {
-    return {type: TODO_CREATE}
+export function todoCreateSuccess(id) {
+    return {
+        type: TODO_CREATE,
+        payload: id
+    }
 }
 
 export function todoCreateLoading() {
@@ -37,16 +44,19 @@ export function todoCreateError(error) {
 }
 
 export function todoUpdate(todo) {
+    return function (dispatch) {
         try {
-            todoUpdateLoading();
+            dispatch(todoUpdateLoading());
             let todos = JSON.parse(localStorage.getItem('todos')) || [];
-            let foundIndex = todos.findIndex(x => x.id === todo.id);
-            if(foundIndex) todos[foundIndex] = todo;
+            let foundIndex = todos.findIndex(x => x.id == todo.id);
+            if(foundIndex!=-1) todos[foundIndex] = todo;
             localStorage.setItem('todos', JSON.stringify(todos));
-            todoUpdateSuccess();
+            dispatch(todoUpdateSuccess());
+            dispatch(todoGet());
         } catch(e) {
-            todoUpdateError(e.message);
+            dispatch(todoUpdateError(e.message));
         }
+    }
 }
 
 export function todoUpdateSuccess() {
@@ -65,13 +75,16 @@ export function todoUpdateError(error) {
 }
 
 export function todoGet() {
+    return function(dispatch) {
         try {
-            todoGetLoading();
+            dispatch(todoGetLoading());
             let todos = JSON.parse(localStorage.getItem('todos')) || [];
-            todoGetSuccess(todos);
+            dispatch(todoGetSuccess(todos));
         } catch(e) {
-            todoGetError(e.message);
+            dispatch(todoGetError(e.message));
         }
+    }
+
 }
 
 export function todoGetSuccess(todos) {
@@ -93,19 +106,25 @@ export function todoGetError(error) {
 }
 
 export function todoDelete(id) {
+    return function(dispatch) {
         try {
-            todoDeleteLoading();
+            dispatch(todoDeleteLoading());
             let todos = JSON.parse(localStorage.getItem('todos')) || [];
             todos.splice(todos.findIndex(x => x.id === id),1);
             localStorage.setItem('todos', JSON.stringify(todos));
-            todoDeleteSuccess();
+            dispatch(todoDeleteSuccess(id-1));
+            dispatch(todoGet());
         } catch(e) {
-            todoDeleteError(e.message);
+            dispatch(todoDeleteError(e.message));
         }
+    }
 }
 
-export function todoDeleteSuccess() {
-    return {type: TODO_DELETE}
+export function todoDeleteSuccess(id) {
+    return {
+        type: TODO_DELETE,
+        payload: id
+    }
 }
 
 export function todoDeleteLoading() {
@@ -119,20 +138,29 @@ export function todoDeleteError(error) {
     }
 }
 
-export function todoCheck() {
-    try {
-        todoCheckLoading();
-        let todos = JSON.parse(localStorage.getItem('todos')) || [];
-        let foundIndex = todos.findIndex(x => x.id === todo.id);
-        if(foundIndex!==-1){
-            todos[foundIndex].checked = true;
-            todos[foundIndex].datePerform = new Date();
+export function todoCheck(id) {
+    return function(dispatch) {
+        try {
+            dispatch(todoCheckLoading());
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            let foundIndex = todos.findIndex(x => x.id === id);
+            if(foundIndex!==-1){
+                todos[foundIndex].checked = !todos[foundIndex].checked;
+                if(todos[foundIndex].datePerform) todos[foundIndex].datePerform = "";
+                else todos[foundIndex].datePerform = new Date().toLocaleString();
+            }
+            localStorage.setItem('todos', JSON.stringify(todos));
+            dispatch(todoCheckSuccess());
+            dispatch(todoGet());
+        } catch(e) {
+            dispatch(todoCheckError(e.message));
         }
-        localStorage.setItem('todos', JSON.stringify(todos));
-        todoCheckSuccess();
-    } catch(e) {
-        todoCheckError(e.message);
     }
+
+}
+
+export function todoCheckSuccess() {
+    return {type: TODO_CHECK}
 }
 
 export function todoCheckLoading() {

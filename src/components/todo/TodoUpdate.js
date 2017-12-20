@@ -3,13 +3,12 @@ import * as actions from '../../actions/actions';
 import {connect} from 'react-redux';
 
 class TodoUpdate extends Component {
-    componentDidMount() {
-        if(!this.props.todos.length) actions.todoGet();
-    }
     constructor(props) {
         super(props);
+        const {id} = this.props.match.params;
         let todo = this.props.todos.find(item => item.id == id);
         this.state = {
+            id: todo.id,
             title: todo.title,
             description: todo.description,
             deadline: todo.deadline,
@@ -50,7 +49,7 @@ class TodoUpdate extends Component {
     handleSubmit(e) {
         e.preventDefault();
         const todo = {
-            id: this.props.id,
+            id: this.state.id,
             importance: this.state.importance,
             title: this.state.title,
             deadline: this.state.deadline,
@@ -58,7 +57,7 @@ class TodoUpdate extends Component {
             datePerform: '',
             checked: false,
         };
-        actions.todoUpdate(todo);
+        this.props.todoUpdate(todo);
         if (!this.props.isError) this.props.history.push("/dashboard");
     }
 
@@ -71,7 +70,7 @@ class TodoUpdate extends Component {
 
                 <div className="col-md-6">
                     <input id="title" type="text" className="form-control"
-                           name="title" required onChange={this.handleTitle}/>
+                           name="title" required onChange={this.handleTitle} value={this.state.title}/>
 
                 </div>
             </fieldset>
@@ -80,7 +79,7 @@ class TodoUpdate extends Component {
 
                 <div className="col-md-6">
                     <input id="deadline" type="datetime-local" className="form-control"
-                           name="deadline" onChange={this.handleDeadline}/>
+                           name="deadline" onChange={this.handleDeadline} value={this.state.deadline}/>
 
                 </div>
             </fieldset>
@@ -88,10 +87,11 @@ class TodoUpdate extends Component {
                 <label htmlFor="deadline" className="col-md-4 control-label">Importance</label>
                 <div className="col-md-6">
                     <select id="importance" className="form-control"
-                            name="importance" required onChange={this.handleImportance}>
-                        <option value="1">Common</option>
-                        <option value="2">Important</option>
-                        <option value="3">Very important</option>
+                            name="importance" required onChange={this.handleImportance} value={this.state.importance}>
+                        <option disabled value="0">Choose importance...</option>
+                        <option value="Common">Common</option>
+                        <option value="Important">Important</option>
+                        <option value="Very important">Very important</option>
                     </select>
 
                 </div>
@@ -100,7 +100,7 @@ class TodoUpdate extends Component {
                 <label htmlFor="description" className="col-md-4 control-label">Description</label>
 
                 <div className="col-md-6">
-                    <textarea id="description" className="form-control" name="description" required onChange={this.handleDescription}/>
+                    <textarea id="description" className="form-control" name="description" required onChange={this.handleDescription} value={this.state.description}/>
                 </div>
             </fieldset>
             <fieldset className="form-group">

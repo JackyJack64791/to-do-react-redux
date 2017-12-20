@@ -6,14 +6,13 @@ import {
 } from "../constants/actionTypes";
 
 
-function todoReducer (state={todos:{}, isLoading:false, isError: false, id: 0}, action) {
-    console.log(state);
+function todoReducer (state={todos:{}, isLoading:false, isError: false, id: 0, getSuccess: false}, action) {
     switch (action.type) {
         case TODO_CREATE:
             return Object.assign({}, state, {
                 isError: false,
                 isLoading: false,
-                id: state.id+1
+                id: action.payload,
             });
         case TODO_CREATE_LOADING:
             return Object.assign({}, state, {
@@ -46,6 +45,7 @@ function todoReducer (state={todos:{}, isLoading:false, isError: false, id: 0}, 
             return Object.assign({},state,{
                 isError: false,
                 isLoading: false,
+                id: action.payload,
             });
         case TODO_DELETE_LOADING:
             return Object.assign({},state,{
@@ -63,17 +63,20 @@ function todoReducer (state={todos:{}, isLoading:false, isError: false, id: 0}, 
                 todos: action.payload,
                 isError: false,
                 isLoading: false,
+                getSuccess: true,
             });
         case TODO_GET_LOADING:
             return Object.assign({},state,{
                 isError: false,
                 isLoading: true,
+                getSuccess: false,
             });
 
         case TODO_GET_ERROR:
             return Object.assign({},state,{
                 isError:true,
                 isLoading:false,
+                getSuccess: false,
                 error:action.payload
             });
         case TODO_CHECK:

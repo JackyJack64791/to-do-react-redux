@@ -3,3 +3,29 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.btn{
+  margin: 5px 0;
+}
+.edit_button {
+  float: right;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.2;
+}
+.edit_button:hover, .edit_button:focus {
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.checked {
+    background: #5db65c;
+}
+.timeout {
+    background: #b6524b;
+}
+

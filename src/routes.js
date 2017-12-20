@@ -10,7 +10,7 @@ const Routes = () => {
         <Layout>
             <Route exact path="/dashboard" component={Dashboard}/>
             <Route path="/create" component={TodoCreate}/>
-            <Route path="/update" component={TodoUpdate}/>
+            <Route path="/update/:id" component={TodoUpdate}/>
         </Layout>
     )
 };

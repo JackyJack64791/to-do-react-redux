@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 class EditButton extends Component {
-    constructor(props){
-        super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    handleSubmit(){
-        this.props.submit();
-    }
     render() {
         return (
-            <button type="button" className="close glyphicon glyphicon-remove" aria-label="Close" onClick={this.handleSubmit}><span aria-hidden="true"></span></button>)
+            <Link type="button" className="button glyphicon glyphicon-pencil edit_button" to={this.props.link} aria-label="Edit"><span
+                aria-hidden="true"></span></Link>)
     }
 }
+
 export default (EditButton);
